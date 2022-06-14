@@ -56,25 +56,28 @@ async function run() {
 async function genhtml(coverageFiles, tmpPath) {
   const workingDirectory = core.getInput('working-directory').trim() || './';
   const artifactName = core.getInput('artifact-name').trim();
-  const artifactPath = path.resolve(tmpPath, 'html').trim();
-  const args = [...coverageFiles, '--rc', 'lcov_branch_coverage=1'];
 
-  args.push('--output-directory');
-  args.push(artifactPath);
+  if (artifactName !== '') {
+    const artifactPath = path.resolve(tmpPath, 'html').trim();
+    const args = [...coverageFiles, '--rc', 'lcov_branch_coverage=1'];
 
-  await exec.exec('genhtml', args, { cwd: workingDirectory });
+    args.push('--output-directory');
+    args.push(artifactPath);
 
-  const globber = await glob.create(`${artifactPath}/**`);
-  const htmlFiles = await globber.glob();
+    await exec.exec('genhtml', args, { cwd: workingDirectory });
 
-  await artifact
-    .create()
-    .uploadArtifact(
-      artifactName,
-      htmlFiles,
-      artifactPath,
-      { continueOnError: false },
-    );
+    const globber = await glob.create(`${artifactPath}/**`);
+    const htmlFiles = await globber.glob();
+
+    await artifact
+      .create()
+      .uploadArtifact(
+        artifactName,
+        htmlFiles,
+        artifactPath,
+        { continueOnError: false },
+      );
+  }
 }
 
 async function mergeCoverages(coverageFiles, tmpPath) {
