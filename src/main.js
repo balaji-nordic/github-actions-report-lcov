@@ -21,12 +21,12 @@ async function run() {
     const coverageFile = await mergeCoverages(coverageFiles, tmpPath);
     const totalCoverage = lcovTotal(coverageFile);
     const minimumCoverage = core.getInput('minimum-coverage');
-    const gitHubToken = core.getInput('github-token').trim();
+    const gitHubCommentToken = core.getInput('github-comment-token').trim();
     const errorMessage = `The code coverage is too low. Expected at least ${minimumCoverage}.`;
     const isFailure = totalCoverage < minimumCoverage;
 
-    if (gitHubToken !== '' && github.context.eventName === 'pull_request') {
-      const octokit = await github.getOctokit(gitHubToken);
+    if (gitHubCommentToken !== '' && github.context.eventName === 'pull_request') {
+      const octokit = await github.getOctokit(gitHubCommentToken);
       const summary = await summarize(coverageFile);
       const details = await detail(coverageFile, octokit);
       const sha = github.context.payload.pull_request.head.sha;
