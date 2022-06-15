@@ -94,7 +94,7 @@ async function mergeCoverages(coverageFiles, tmpPath) {
   args.push('--output-file');
   args.push(mergedCoverageFile);
 
-  await exec.exec('lcov', args);
+  await exec.exec('sudo lcov', args);
 
   return mergedCoverageFile;
 }
