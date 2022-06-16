@@ -17303,6 +17303,7 @@ async function run() {
         body += `\n:no_entry: ${errorMessage}`;
       }
 
+      core.debug("Creating a comment in the PR!")
       await octokit.issues.createComment({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
